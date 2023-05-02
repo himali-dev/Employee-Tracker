@@ -27,6 +27,36 @@ inquirer.prompt({
     "Exit"
   ]
 })
+.then((answer) => {
+  // console.log(answer);
+  switch (answer.start) {
+    case "View Departments":
+      View_Departments();
+      break;
+
+    case "View Roles":
+      View_Roles();
+      break;
+
+    case "View Employees":
+      View_Employees();
+      break;
+
+    case "View Employees By Manager":
+      View_Employees_By_Manager();
+      break;
+
+    case "View Employees By Department":
+      View_Employees_By_Department();
+      break;
+
+    case "Exit":
+      Exit();
+      break;
+  }
+});
+
+
 
 
 
