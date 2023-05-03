@@ -56,27 +56,35 @@ inquirer.prompt({
 
     case "Update Employee Role":
       Update_Employee_Role();
+      break;
 
     case "Update Employee Manager":
       Update_Employee_Manager();
+      break;
 
     case "Add Department":
       Add_Department();
+      break;
 
     case "Add Role":
       Add_Role();
+      break;
 
     case "Add Employee":
       Add_Employee();
+      break;
 
     case "Remove Employee":
       Remove_Employee();
+      break;
 
     case "Remove Department":
       Remove_Department();
+      break;
 
     case "Remove Role":
       Remove_Role();
+      break;
 
     case "Exit":
       Exit();
@@ -238,7 +246,7 @@ function View_Total_Utilized_Budget_for_Department() {
   });
 }
 
-
+// adding department
 function Add_Department() {
   inquirer
     .prompt([
@@ -251,7 +259,7 @@ function Add_Department() {
     .then((answer) => {
       const { dept } = answer;
       connection.query(
-        `INSERT INTO department (dept) VALUES (?)`,
+        `INSERT INTO department (name) VALUES (?)`,
         [dept],
         (err, res) => {
           if (err) throw err;
@@ -263,6 +271,53 @@ function Add_Department() {
       );
     });
 }
+
+
+// adding roles
+function Add_Role() {
+  const query = `SELECT department.name FROM department`;
+  connection.query(query, (err, data) => {
+    if (err) throw err;
+    const departments = data.map((item) => `${item.name}`);
+    inquirer
+      .prompt([
+        {
+          type: "input",
+          name: "title",
+          message: "Title of the Role?",
+        },
+        {
+          type: "input",
+          name: "salary",
+          message: "Salary of the Role?",
+        },
+        {
+          type: "list",
+          name: "department_name",
+          message: "Department?",
+          choices: [...departments],
+        },
+      ])
+      .then((answer) => {
+        const { title, salary, department_name } = answer;
+        connection.query(
+          `INSERT INTO role (title, salary, department_id)
+             SELECT ?, ?, department.id
+             FROM department
+             WHERE department.name = ?`,
+          [title, salary, department_name],
+          (err, res) => {
+            if (err) throw err;
+            console.log(
+              `\n-------------------\n Role ${title} is added!\n`
+            );
+            View_Roles();
+          }
+        );
+      });
+  });
+}
+
 
 
 
