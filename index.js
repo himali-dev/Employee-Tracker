@@ -224,6 +224,48 @@ function View_Employees_By_Department() {
 }
 
 
+//View Total Utilized Budget for Department
+function View_Total_Utilized_Budget_for_Department() {
+  const query = `SELECT department.name AS department,
+  SUM(role.salary) AS utilized_budget FROM employee
+  LEFT JOIN role ON employee.role_id = role.id
+  LEFT JOIN department ON role.department_id = department.id
+  GROUP BY department.name;`;
+  connection.query(query, (err, data) => {
+    if (err) throw err;
+    console.table(data);
+    homePage();
+  });
+}
+
+
+function Add_Department() {
+  inquirer
+    .prompt([
+      {
+        type: "input",
+        name: "dept",
+        message: "Let us know the department name you wish to add",
+      },
+    ])
+    .then((answer) => {
+      const { dept } = answer;
+      connection.query(
+        `INSERT INTO department (dept) VALUES (?)`,
+        [dept],
+        (err, res) => {
+          if (err) throw err;
+          console.log(
+            `\n-------------------\n Department ${dept} is added!\n`
+          );
+          View_Departments();
+        }
+      );
+    });
+}
+
+
+
 // Exit Home Page
 function Exit() {
   console.log("Thank you!");
