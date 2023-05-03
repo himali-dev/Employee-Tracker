@@ -450,6 +450,55 @@ function Update_Employee_Role() {
   });
 }
 
+function Remove_Role() {
+  connection.query("SELECT role.title FROM role", (err, data) => {
+    const roles = data.map((item) => `${item.title}`);
+
+    inquirer
+      .prompt([
+        {
+          type: "list",
+          name: "title",
+          message: "Select a role you want to remove?",
+          choices: [...roles],
+        },
+      ])
+      .then((data) => {
+
+        const { title } = data;
+        connection.query(
+          "SELECT * FROM role WHERE title = '" + title + "'",
+          (err, res) => {
+            if (err) throw err;
+            if (res.length === 0) {
+              console.log(`Role ${data.title} is not in roles table.`);
+            }
+
+            if (res.length !== 0) {
+              connection.query(
+                "DELETE FROM role WHERE title = '" + title + "'",
+                (err, res) => {
+                  if (err) throw err;
+                  if (res.affectedRows === 0) {
+                    console.log(
+                      `Role ${data.title} not found.`
+                    );
+                  } else {
+                    console.table({
+                      message: `\n-------------------\n Role ${data.title} is removed.\n`,
+                      affectedRows: res.affectedRows,
+                    });
+                    View_Roles();
+                  }
+                }
+              );
+            }
+          }
+        );
+      });
+  });
+}
+
 
 // Exit Home Page
 function Exit() {
