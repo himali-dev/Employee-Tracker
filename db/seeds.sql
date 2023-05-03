@@ -28,6 +28,6 @@ VALUES  ('Himali', 'Panchal', 1, NULL),
         ('Mister', 'Bird', 6, 5),
         ('Paris', 'Chanel', 7, NULL),
         ('Kiran', 'Bedi', 8, 7),
-        ('India', 'Johns', 1, NULL);
-        ('Pooja', 'Patil', 2, NULL);
+        ('India', 'Johns', 1, NULL),
+        ('Pooja', 'Patil', 2, NULL),
         ('Jenil', 'Narola', 4, NULL);
