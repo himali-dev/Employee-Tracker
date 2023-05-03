@@ -134,13 +134,95 @@ function View_Employees() {
   LEFT JOIN department ON
   role.department_id = department.id
   LEFT JOIN employee lead ON
-  manager.id = employee.manager_id;`;
+  lead.id = employee.manager_id;`;
   connection.query(query, (err, data) => {
     if (err) throw err;
     console.table(data);
     homePage();
   });
 }
+
+
+//view employes by manager
+function View_Employees_By_Manager() {
+  const query = `SELECT
+  employee.id,
+  employee.first_name,
+  employee.last_name,
+  CONCAT(lead.first_name, ' ', lead.last_name) AS manager,
+  role.title,
+  department.name AS
+  department
+  FROM employee
+  LEFT JOIN role ON employee.role_id = role.id
+  LEFT JOIN department ON role.department_id = department.id
+  LEFT JOIN employee lead ON lead.id = employee.manager_id
+  ORDER BY manager;`;
+  connection.query(query, (err, data) => {
+    if (err) throw err;
+    console.table(data);
+    homePage();
+  });
+}
+
+
+
+// view emp by dept
+function View_Employees_By_Department() {
+  inquirer
+    .prompt({
+      name: "department",
+      type: "list",
+      message: "Which department's employees you wanna see?",
+      choices: [
+        "IT",
+        "CS",
+        "HR",
+        "Shayona",
+        "Outreach",
+        "Facilities",
+        "Sabha Vyavastha"
+      ],
+    })
+    .then((answer) => {
+
+      switch (answer.department) {
+        case "IT":
+          return myViewDept("IT");
+        case "CS":
+          return myViewDept("CS");
+        case "HR":
+          return myViewDept("HR");
+        case "Shayona":
+          return myViewDept("Shayona");
+        case "Outreach":
+          return myViewDept("Outreach");
+        case "Facilities":
+          return myViewDept("Facilities");
+        case "Sabha Vyavastha":
+          return myViewDept("Sabha Vyavastha");
+      }
+    });
+
+  function myViewDept(department) {
+    const query = `
+     SELECT employee.id,
+     employee.first_name,
+     employee.last_name,
+     role.title,
+     department.name AS department
+     FROM employee
+     LEFT JOIN role ON employee.role_id = role.id
+     LEFT JOIN department ON role.department_id = department.id
+     WHERE department.name = ?;`;
+    connection.query(query, department, (err, data) => {
+      if (err) throw err;
+      console.table(data);
+      homePage();
+    });
+  }
+}
+
 
 // Exit Home Page
 function Exit() {
